@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* Custom CSS variables for Swedish theme colors */
+:root {
+  --color-swedish-blue: #0058a3;
+  --color-swedish-yellow: #ffc72c;
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+}
+
+.dark {
+  --color-background: #111827;
+  --color-foreground: #f3f4f6;
+}
+
+body {
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Custom styles for historical dates and genealogical data */
+.historical-date {
+  font-variant-numeric: oldstyle-nums;
+}
+
+.genealogical-note {
+  font-style: italic;
+  @apply text-gray-600 dark:text-gray-400;
+}
