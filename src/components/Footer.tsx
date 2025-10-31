@@ -1,4 +1,25 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface Stats {
+  totalPersons: number;
+  dateRange: {
+    earliest: number;
+    latest: number;
+  };
+}
+
 export default function Footer() {
+  const [stats, setStats] = useState<Stats | null>(null);
+
+  useEffect(() => {
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(err => console.error('Failed to load stats:', err));
+  }, []);
+
   return (
     <footer className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -19,8 +40,8 @@ export default function Footer() {
               Statistik
             </h3>
             <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-              <li>1,041 personer registrerade</li>
-              <li>Källmaterial: 1572-2023</li>
+              <li>{stats ? stats.totalPersons.toLocaleString('sv-SE') : '...'} personer registrerade</li>
+              <li>Källmaterial: {stats ? `${stats.dateRange.earliest}-${stats.dateRange.latest}` : '...'}</li>
               <li>Flera forskare bidragit</li>
             </ul>
           </div>
