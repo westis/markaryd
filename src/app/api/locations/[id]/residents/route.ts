@@ -59,7 +59,7 @@ export async function GET(
 
     if (!periodsError && periods && periods.length > 0) {
       // Filter periods that overlap with the query date/range
-      residents = periods
+      const filteredPeriods = periods
         .filter(period => {
           // Person was at location during this time if:
           // 1. Period start is before or on query date (or null)
@@ -72,11 +72,18 @@ export async function GET(
           const endOk = !periodEnd || periodEnd >= query;
 
           return startOk && endOk && period.period_type === 'residence';
+        });
+
+      residents = filteredPeriods
+        .map(period => {
+          const person = period.persons;
+          if (!person) return null;
+          return {
+            ...person,
+            occupation_title: person.occupations?.title || null,
+          } as Person;
         })
-        .map(period => ({
-          ...period.persons,
-          occupation_title: period.persons?.occupations?.title || null,
-        }))
+        .filter((person): person is Person => person !== null)
         .filter((person, index, self) =>
           // Deduplicate by person ID
           index === self.findIndex(p => p.id === person.id)
@@ -133,11 +140,13 @@ export async function GET(
         })
         .map(([_personId, personEvents]) => {
           const person = personEvents[0].persons;
+          if (!person) return null;
           return {
             ...person,
-            occupation_title: person?.occupations?.title || null,
-          };
-        });
+            occupation_title: person.occupations?.title || null,
+          } as Person;
+        })
+        .filter((person): person is Person => person !== null);
     }
 
     // Alternative method: Simple query for persons alive during the year
