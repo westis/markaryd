@@ -82,12 +82,12 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" style={{ minWidth: '1200px' }}>
           <thead className="bg-gray-50 dark:bg-gray-900">
             <tr>
               {/* Name Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '200px' }}>
                 <button
                   onClick={() => handleSort('name')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -112,7 +112,7 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
               </th>
 
               {/* Birth Date Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '150px' }}>
                 <button
                   onClick={() => handleSort('birth_date')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -120,13 +120,13 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
                   <span>Född</span>
                   <SortIcon field="birth_date" />
                 </button>
-                <div className="mt-2 flex gap-1">
+                <div className="mt-2 flex flex-col gap-1">
                   <input
                     type="number"
                     placeholder="Från år"
                     value={filters.birthYearFrom}
                     onChange={(e) => handleFilterChange('birthYearFrom', e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                    className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
                     min="1600"
                     max="2000"
                   />
@@ -135,7 +135,7 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
                     placeholder="Till år"
                     value={filters.birthYearTo}
                     onChange={(e) => handleFilterChange('birthYearTo', e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                    className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
                     min="1600"
                     max="2000"
                   />
@@ -143,7 +143,7 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
               </th>
 
               {/* Death Date Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '150px' }}>
                 <button
                   onClick={() => handleSort('death_date')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -151,13 +151,13 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
                   <span>Död</span>
                   <SortIcon field="death_date" />
                 </button>
-                <div className="mt-2 flex gap-1">
+                <div className="mt-2 flex flex-col gap-1">
                   <input
                     type="number"
                     placeholder="Från år"
                     value={filters.deathYearFrom}
                     onChange={(e) => handleFilterChange('deathYearFrom', e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                    className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
                     min="1600"
                     max="2000"
                   />
@@ -166,7 +166,7 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
                     placeholder="Till år"
                     value={filters.deathYearTo}
                     onChange={(e) => handleFilterChange('deathYearTo', e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                    className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
                     min="1600"
                     max="2000"
                   />
@@ -174,7 +174,7 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
               </th>
 
               {/* Gender Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '120px' }}>
                 <button
                   onClick={() => handleSort('gender')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -194,7 +194,7 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
               </th>
 
               {/* Occupation Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '180px' }}>
                 <button
                   onClick={() => handleSort('occupation')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -212,7 +212,7 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
               </th>
 
               {/* Location Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '180px' }}>
                 <button
                   onClick={() => handleSort('location')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -230,7 +230,7 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
               </th>
 
               {/* Marital Status Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '150px' }}>
                 <button
                   onClick={() => handleSort('marital_status')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"

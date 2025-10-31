@@ -154,12 +154,12 @@ export default function LocationPersonTable({ persons, locationId, connectionFil
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" style={{ minWidth: '1000px' }}>
           <thead className="bg-gray-50 dark:bg-gray-900">
             <tr>
               {/* Name Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '200px' }}>
                 <button
                   onClick={() => handleSort('name')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -177,7 +177,7 @@ export default function LocationPersonTable({ persons, locationId, connectionFil
               </th>
 
               {/* Gender Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '120px' }}>
                 <button
                   onClick={() => handleSort('gender')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -197,7 +197,7 @@ export default function LocationPersonTable({ persons, locationId, connectionFil
               </th>
 
               {/* Relevant Date/Period Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '180px' }}>
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                   {getDateColumnHeader()}
                 </div>
@@ -205,7 +205,7 @@ export default function LocationPersonTable({ persons, locationId, connectionFil
 
               {/* Birth Date Column (if not specifically filtered by birth) */}
               {connectionFilter !== 'birth' && (
-                <th className="px-6 py-3 text-left">
+                <th className="px-6 py-3 text-left" style={{ minWidth: '120px' }}>
                   <button
                     onClick={() => handleSort('birth_date')}
                     className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -218,7 +218,7 @@ export default function LocationPersonTable({ persons, locationId, connectionFil
 
               {/* Death Date Column (if not specifically filtered by death) */}
               {connectionFilter !== 'death' && (
-                <th className="px-6 py-3 text-left">
+                <th className="px-6 py-3 text-left" style={{ minWidth: '120px' }}>
                   <button
                     onClick={() => handleSort('death_date')}
                     className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -230,7 +230,7 @@ export default function LocationPersonTable({ persons, locationId, connectionFil
               )}
 
               {/* Occupation Column */}
-              <th className="px-6 py-3 text-left">
+              <th className="px-6 py-3 text-left" style={{ minWidth: '180px' }}>
                 <button
                   onClick={() => handleSort('occupation')}
                   className="flex items-center space-x-1 text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider hover:text-[#0058a3] dark:hover:text-blue-500"
@@ -242,7 +242,7 @@ export default function LocationPersonTable({ persons, locationId, connectionFil
 
               {/* Connection Type (only for 'all' filter) */}
               {connectionFilter === 'all' && (
-                <th className="px-6 py-3 text-left">
+                <th className="px-6 py-3 text-left" style={{ minWidth: '150px' }}>
                   <div className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                     Koppling
                   </div>
