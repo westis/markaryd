@@ -12,25 +12,56 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light');
-  const [mounted, setMounted] = useState(false);
+  // Initialize theme based on system preference to avoid flash
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('theme') as Theme;
+      if (stored && (stored === 'light' || stored === 'dark')) {
+        return stored;
+      }
+      // Check system preference
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'light';
+  });
 
   useEffect(() => {
-    setMounted(true);
     // Check localStorage first, then system preference
     const stored = localStorage.getItem('theme') as Theme;
+    let effectiveTheme: Theme;
+
     if (stored && (stored === 'light' || stored === 'dark')) {
-      setTheme(stored);
-      if (stored === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      effectiveTheme = stored;
     } else {
-      // Default to light mode (not system preference)
-      setTheme('light');
+      // Use system preference
+      effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    setTheme(effectiveTheme);
+
+    if (effectiveTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
       document.documentElement.classList.remove('dark');
     }
+
+    // Listen for system preference changes (only if user hasn't set a preference)
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      const storedTheme = localStorage.getItem('theme');
+      if (!storedTheme) {
+        const newTheme = e.matches ? 'dark' : 'light';
+        setTheme(newTheme);
+        if (newTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   const toggleTheme = () => {
