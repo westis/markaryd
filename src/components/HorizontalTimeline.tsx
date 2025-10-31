@@ -61,7 +61,7 @@ export default function HorizontalTimeline({ locationId }: HorizontalTimelinePro
       let allMinYear = Infinity;
       let allMaxYear = -Infinity;
 
-      personEventsMap.forEach((personEvents, personId) => {
+      personEventsMap.forEach((personEvents, _personId) => {
         const person = personEvents[0].person;
         if (!person) return;
 

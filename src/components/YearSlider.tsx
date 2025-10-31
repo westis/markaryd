@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import PersonCard from './PersonCard';
-import type { Person } from '@/types/person';
+import type { Person, EventDetailed } from '@/types/person';
 
 interface YearSliderProps {
   locationId: number;
@@ -48,7 +48,7 @@ export default function YearSlider({ locationId }: YearSliderProps) {
           const data = await response.json();
           if (data.events && data.events.length > 0) {
             const years = data.events
-              .map((e: any) => e.event_date ? new Date(e.event_date).getFullYear() : null)
+              .map((e: EventDetailed) => e.event_date ? new Date(e.event_date).getFullYear() : null)
               .filter((y: number | null) => y !== null);
 
             if (years.length > 0) {

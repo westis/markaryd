@@ -107,7 +107,7 @@ export async function GET(
       }
 
       // Group events by person
-      const personEventsMap = new Map<number, any[]>();
+      const personEventsMap = new Map<number, typeof events>();
       (events || []).forEach(event => {
         if (!personEventsMap.has(event.person_id)) {
           personEventsMap.set(event.person_id, []);
@@ -118,7 +118,7 @@ export async function GET(
       // Filter persons who were at this location during the query date
       const query = new Date(queryDate);
       residents = Array.from(personEventsMap.entries())
-        .filter(([personId, personEvents]) => {
+        .filter(([_personId, personEvents]) => {
           // Find residence or birth/death events (GEDCOM codes)
           const residenceStart = personEvents.find(e => e.event_type === 'RESI' || e.event_type === 'BIRT');
           const residenceEnd = personEvents.find(e => e.event_type === 'RESI' || e.event_type === 'DEAT');
@@ -131,7 +131,7 @@ export async function GET(
 
           return startOk && endOk;
         })
-        .map(([personId, personEvents]) => {
+        .map(([_personId, personEvents]) => {
           const person = personEvents[0].persons;
           return {
             ...person,
