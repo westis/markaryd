@@ -32,6 +32,14 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
+  // Local state for year inputs to allow typing without immediate filtering
+  const [localYearFilters, setLocalYearFilters] = useState({
+    birthYearFrom: '',
+    birthYearTo: '',
+    deathYearFrom: '',
+    deathYearTo: '',
+  });
+
   // Use external filters if provided, otherwise use local state
   const filters = externalFilters || {
     firstName: '',
@@ -54,7 +62,19 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
     onSortChange?.(field, newDirection);
   };
 
-  // Handle filter change
+  // Handle year filter change with 4-digit validation
+  const handleYearFilterChange = (key: 'birthYearFrom' | 'birthYearTo' | 'deathYearFrom' | 'deathYearTo', value: string) => {
+    // Update local state immediately for visual feedback
+    setLocalYearFilters(prev => ({ ...prev, [key]: value }));
+
+    // Only notify parent when empty or 4 digits
+    if (value === '' || value.length === 4) {
+      const newFilters = { ...filters, [key]: value };
+      onFilterChange?.(newFilters);
+    }
+  };
+
+  // Handle filter change for non-year fields
   const handleFilterChange = (key: keyof TableFilters, value: string) => {
     const newFilters = { ...filters, [key]: value };
     // Call parent callback (parent implements debouncing)
@@ -82,9 +102,9 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800">
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800" style={{ maxHeight: 'calc(100vh - 200px)' }}>
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" style={{ minWidth: '1200px' }}>
-          <thead className="bg-gray-50 dark:bg-gray-900">
+          <thead className="bg-gray-50 dark:bg-gray-900 sticky top-0 z-10">
             <tr>
               {/* Name Column */}
               <th className="px-6 py-3 text-left" style={{ minWidth: '200px' }}>
@@ -124,20 +144,20 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
                   <input
                     type="number"
                     placeholder="Från år"
-                    value={filters.birthYearFrom}
-                    onChange={(e) => handleFilterChange('birthYearFrom', e.target.value)}
+                    value={localYearFilters.birthYearFrom}
+                    onChange={(e) => handleYearFilterChange('birthYearFrom', e.target.value)}
                     className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
                     min="1600"
-                    max="2000"
+                    max="2100"
                   />
                   <input
                     type="number"
                     placeholder="Till år"
-                    value={filters.birthYearTo}
-                    onChange={(e) => handleFilterChange('birthYearTo', e.target.value)}
+                    value={localYearFilters.birthYearTo}
+                    onChange={(e) => handleYearFilterChange('birthYearTo', e.target.value)}
                     className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
                     min="1600"
-                    max="2000"
+                    max="2100"
                   />
                 </div>
               </th>
@@ -155,20 +175,20 @@ export default function PersonTable({ persons, filters: externalFilters, onFilte
                   <input
                     type="number"
                     placeholder="Från år"
-                    value={filters.deathYearFrom}
-                    onChange={(e) => handleFilterChange('deathYearFrom', e.target.value)}
+                    value={localYearFilters.deathYearFrom}
+                    onChange={(e) => handleYearFilterChange('deathYearFrom', e.target.value)}
                     className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
                     min="1600"
-                    max="2000"
+                    max="2100"
                   />
                   <input
                     type="number"
                     placeholder="Till år"
-                    value={filters.deathYearTo}
-                    onChange={(e) => handleFilterChange('deathYearTo', e.target.value)}
+                    value={localYearFilters.deathYearTo}
+                    onChange={(e) => handleYearFilterChange('deathYearTo', e.target.value)}
                     className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
                     min="1600"
-                    max="2000"
+                    max="2100"
                   />
                 </div>
               </th>
