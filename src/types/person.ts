@@ -95,6 +95,105 @@ export interface PersonRelationship extends Relationship {
   related_person: Person | null;
 }
 
+// GEDCOM 5.5.5 event types
+export type GedcomEventType =
+  | 'BIRT' // Birth
+  | 'DEAT' // Death
+  | 'MARR' // Marriage
+  | 'BAPM' // Baptism (LDS)
+  | 'CHR'  // Christening
+  | 'BURI' // Burial
+  | 'RESI' // Residence
+  | 'EMIG' // Emigration
+  | 'IMMI' // Immigration
+  | 'NATU' // Naturalization
+  | 'CENS' // Census
+  | 'OCCU' // Occupation
+  | 'GRAD' // Graduation
+  | 'CONF' // Confirmation
+  | 'ORDN' // Ordination
+  | 'ADOP' // Adoption
+  | 'CREM' // Cremation
+  | 'PROB' // Probate
+  | 'WILL' // Will
+  | 'EVEN'; // Generic event
+
+export interface Event {
+  id: number;
+  person_id: number;
+  location_id: number | null;
+  event_type: GedcomEventType;
+  event_date: string | null;
+  event_date_text: string | null;
+  source_id: number | null;
+  notes: string | null;
+  confidence_level: 'confirmed' | 'inferred' | 'estimated' | 'unknown';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EventDetailed extends Event {
+  person: Person | null;
+  location: Location | null;
+  source: Source | null;
+}
+
+export interface PersonLocationPeriod {
+  id: number;
+  person_id: number;
+  location_id: number;
+  start_date: string | null;
+  start_date_text: string | null;
+  end_date: string | null;
+  end_date_text: string | null;
+  period_type: 'birth' | 'residence' | 'death';
+  inferred: boolean;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PersonLocationPeriodDetailed extends PersonLocationPeriod {
+  person: Person | null;
+  location: Location | null;
+}
+
+export interface RelationshipSuggestion {
+  id: number;
+  person_id: number;
+  suggested_relative_id: number | null;
+  relationship_type: 'father' | 'mother' | 'spouse' | 'child';
+  suggested_name: string | null;
+  source_text: string | null;
+  confidence_score: number;
+  status: 'pending' | 'accepted' | 'rejected';
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+}
+
+export interface RelationshipSuggestionDetailed extends RelationshipSuggestion {
+  person: Person | null;
+  suggested_relative: Person | null;
+}
+
+export interface TimelineFilters {
+  start_date?: string;
+  end_date?: string;
+  event_types?: string[];
+  person_id?: number;
+}
+
+export interface LocationStats {
+  total_events: number;
+  births: number;
+  deaths: number;
+  marriages: number;
+  births_by_decade: { [decade: string]: number };
+  deaths_by_decade: { [decade: string]: number };
+  population_by_year: { [year: string]: number };
+}
+
 export interface SearchFilters {
   query?: string;
   gender?: 'M' | 'K';
@@ -170,6 +269,52 @@ export function formatAgeAtDeath(person: Partial<Person>): string {
   if (person.age_months) parts.push(`${person.age_months} mån`);
   if (person.age_weeks) parts.push(`${person.age_weeks} v`);
   if (person.age_days) parts.push(`${person.age_days} d`);
+
+  return parts.join(', ');
+}
+
+// GEDCOM event type to Swedish display name mapping
+export const gedcomEventNames: Record<GedcomEventType, string> = {
+  'BIRT': 'Födelse',
+  'DEAT': 'Död',
+  'MARR': 'Vigsel',
+  'BAPM': 'Dop (LDS)',
+  'CHR': 'Kristning',
+  'BURI': 'Begravning',
+  'RESI': 'Bosättning',
+  'EMIG': 'Emigration',
+  'IMMI': 'Immigration',
+  'NATU': 'Naturalisering',
+  'CENS': 'Folkräkning',
+  'OCCU': 'Yrke',
+  'GRAD': 'Examen',
+  'CONF': 'Konfirmation',
+  'ORDN': 'Prästvigning',
+  'ADOP': 'Adoption',
+  'CREM': 'Kremering',
+  'PROB': 'Bouppteckning',
+  'WILL': 'Testamente',
+  'EVEN': 'Händelse',
+};
+
+// Helper to get GEDCOM event display name
+export function getEventTypeName(eventType: GedcomEventType): string {
+  return gedcomEventNames[eventType] || eventType;
+}
+
+// Helper to build hierarchical location path following GEDCOM PLAC structure
+// GEDCOM format: Address, City, County, State, Country
+// Swedish format: Address/Gård, By/Samhälle, Socken/Parish, Län, Country
+export function getLocationPath(location: Location | null, hideCountryIfSweden: boolean = true): string {
+  if (!location) return '';
+
+  const parts: string[] = [];
+  parts.push(location.name);
+
+  // TODO: Fetch parent locations from database
+  // For now, return just the location name
+  // Future: Build full path like "Traryd, Markaryd, Kronobergs län"
+  // and hide "Sverige" if hideCountryIfSweden is true
 
   return parts.join(', ');
 }

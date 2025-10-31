@@ -2,6 +2,9 @@
 -- PostgreSQL Database
 
 -- Drop existing tables if they exist (for development)
+DROP TABLE IF EXISTS relationship_suggestions CASCADE;
+DROP TABLE IF EXISTS person_location_periods CASCADE;
+DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS person_sources CASCADE;
 DROP TABLE IF EXISTS relationships CASCADE;
 DROP TABLE IF EXISTS persons CASCADE;
@@ -163,6 +166,72 @@ CREATE INDEX idx_relationships_person1 ON relationships(person1_id);
 CREATE INDEX idx_relationships_person2 ON relationships(person2_id);
 CREATE INDEX idx_relationships_type ON relationships(relationship_type);
 
+-- Events table for timeline functionality
+CREATE TABLE events (
+  id SERIAL PRIMARY KEY,
+  person_id INTEGER REFERENCES persons(id) ON DELETE CASCADE,
+  location_id INTEGER REFERENCES locations(id),
+  event_type VARCHAR(50) NOT NULL, -- birth, death, residence_start, residence_end, marriage, baptism, etc.
+  event_date DATE,
+  event_date_text VARCHAR(50), -- Original text like "ca 1850" or "1850-00-00"
+  source_id INTEGER REFERENCES sources(id),
+  notes TEXT, -- Additional information about the event
+  confidence_level VARCHAR(20) DEFAULT 'confirmed', -- confirmed, inferred, estimated, unknown
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for timeline queries
+CREATE INDEX idx_events_person ON events(person_id);
+CREATE INDEX idx_events_location ON events(location_id);
+CREATE INDEX idx_events_type ON events(event_type);
+CREATE INDEX idx_events_date ON events(event_date);
+-- Composite index for location timeline queries (most common query)
+CREATE INDEX idx_events_location_date ON events(location_id, event_date);
+
+-- Person location periods for tracking residence over time
+CREATE TABLE person_location_periods (
+  id SERIAL PRIMARY KEY,
+  person_id INTEGER NOT NULL REFERENCES persons(id) ON DELETE CASCADE,
+  location_id INTEGER NOT NULL REFERENCES locations(id),
+  start_date DATE,
+  start_date_text VARCHAR(50), -- Original text representation
+  end_date DATE,
+  end_date_text VARCHAR(50),
+  period_type VARCHAR(50) NOT NULL, -- birth, residence, death
+  inferred BOOLEAN DEFAULT false, -- true if auto-calculated, false if confirmed
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for period queries
+CREATE INDEX idx_periods_person ON person_location_periods(person_id);
+CREATE INDEX idx_periods_location ON person_location_periods(location_id);
+CREATE INDEX idx_periods_dates ON person_location_periods(start_date, end_date);
+CREATE INDEX idx_periods_location_dates ON person_location_periods(location_id, start_date, end_date);
+
+-- Relationship suggestions from auto-parsing Excel text fields
+CREATE TABLE relationship_suggestions (
+  id SERIAL PRIMARY KEY,
+  person_id INTEGER NOT NULL REFERENCES persons(id) ON DELETE CASCADE,
+  suggested_relative_id INTEGER REFERENCES persons(id) ON DELETE CASCADE, -- NULL if no match found
+  relationship_type VARCHAR(50) NOT NULL, -- father, mother, spouse, child
+  suggested_name VARCHAR(500), -- The name extracted from Excel text
+  source_text TEXT, -- Original Excel text that this suggestion came from
+  confidence_score DECIMAL(3,2) DEFAULT 0.5, -- 0.0 to 1.0, how confident the match is
+  status VARCHAR(20) DEFAULT 'pending', -- pending, accepted, rejected
+  reviewed_by VARCHAR(255), -- Researcher who reviewed this
+  reviewed_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for suggestions queries
+CREATE INDEX idx_suggestions_person ON relationship_suggestions(person_id);
+CREATE INDEX idx_suggestions_relative ON relationship_suggestions(suggested_relative_id);
+CREATE INDEX idx_suggestions_status ON relationship_suggestions(status);
+CREATE INDEX idx_suggestions_type ON relationship_suggestions(relationship_type);
+
 -- Helper function to parse partial dates from text like "1699-00-00"
 CREATE OR REPLACE FUNCTION parse_partial_date(date_text VARCHAR)
 RETURNS DATE AS $$
@@ -249,3 +318,6 @@ COMMENT ON TABLE locations IS 'Hierarchical location data (addresses, villages, 
 COMMENT ON TABLE relationships IS 'Family relationships between persons';
 COMMENT ON TABLE sources IS 'Source citations and documents';
 COMMENT ON TABLE researchers IS 'Researchers who contributed data';
+COMMENT ON TABLE events IS 'Timeline events (births, deaths, marriages, etc.) for place-based history';
+COMMENT ON TABLE person_location_periods IS 'Time-bounded associations between persons and locations';
+COMMENT ON TABLE relationship_suggestions IS 'Auto-parsed relationship suggestions from Excel text fields for researcher review';
