@@ -30,7 +30,7 @@ export default function Footer() {
               Om Registret
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Genealogiskt register för Markaryd församling, särskilt för de år då kyrkoböckerna förlorades i brand.
+              Genealogiskt register för Markaryds församling, särskilt för de år då kyrkoböckerna förlorades i brand.
             </p>
           </div>
 
@@ -72,7 +72,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>© {new Date().getFullYear()} Markaryd Församling Personregister</p>
+          <p>© {new Date().getFullYear()} Markaryds Församling Personregister</p>
         </div>
       </div>
     </footer>

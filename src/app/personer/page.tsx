@@ -151,7 +151,7 @@ function PersonerContent() {
             Personer
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            {pagination?.total > 0 ? `Bläddra bland alla ${pagination.total.toLocaleString('sv-SE')} registrerade personer från Markaryd församling` : 'Bläddra bland alla registrerade personer från Markaryd församling'}
+            {pagination?.total > 0 ? `Bläddra bland alla ${pagination.total.toLocaleString('sv-SE')} registrerade personer från Markaryds församling` : 'Bläddra bland alla registrerade personer från Markaryds församling'}
           </p>
         </div>
 

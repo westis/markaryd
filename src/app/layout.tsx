@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Markaryd Församling - Personregister",
-  description: "Genealogiskt register för Markaryd församling, särskilt för åren då kyrkoböckerna förlorades i brand.",
+  title: "Markaryds Församling - Personregister",
+  description: "Genealogiskt register för Markaryds församling, särskilt för åren då kyrkoböckerna förlorades i brand.",
   icons: {
     icon: [
       { url: '/favicon.ico' },

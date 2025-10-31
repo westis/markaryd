@@ -1,7 +1,29 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SearchBar from '@/components/SearchBar';
 
+interface Stats {
+  totalPersons: number;
+  dateRange: {
+    earliest: number;
+    latest: number;
+  };
+}
+
 export default function Home() {
+  const [stats, setStats] = useState<Stats | null>(null);
+
+  useEffect(() => {
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(err => console.error('Failed to load stats:', err));
+  }, []);
+
+  const yearsCovered = stats ? stats.dateRange.latest - stats.dateRange.earliest : 0;
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Hero Section */}
@@ -11,10 +33,10 @@ export default function Home() {
             Markaryd Församling
           </h1>
           <h2 className="text-2xl font-light text-gray-700 dark:text-gray-300 mb-6">
-            Personregister 1572-2023
+            Personregister {stats ? `${stats.dateRange.earliest}-${stats.dateRange.latest}` : '...'}
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
-            Detta register innehåller 1,041 personer från Markaryd församling, särskilt för de år då kyrkoböckerna förlorades i brand. Utforska släktträd, sök efter förfäder och upptäck historiska platser.
+            Detta register innehåller {stats ? stats.totalPersons.toLocaleString('sv-SE') : '...'} personer från Markaryds församling, särskilt för de år då kyrkoböckerna förlorades i brand. Utforska släktträd, sök efter förfäder och upptäck historiska platser.
           </p>
 
           {/* Search Bar */}
@@ -50,7 +72,7 @@ export default function Home() {
               Sök Personer
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Bläddra och sök bland alla 1,041 registrerade personer
+              Bläddra och sök bland alla {stats ? stats.totalPersons.toLocaleString('sv-SE') : '...'} registrerade personer
             </p>
           </Link>
 
@@ -99,22 +121,18 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
             Registerstatistik
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
             <div>
-              <div className="text-4xl font-bold text-[#0058a3] dark:text-blue-400 mb-2">1,041</div>
+              <div className="text-4xl font-bold text-[#0058a3] dark:text-blue-400 mb-2">
+                {stats ? stats.totalPersons.toLocaleString('sv-SE') : '...'}
+              </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Personer</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-[#0058a3] dark:text-blue-400 mb-2">450+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">År täckt</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-[#0058a3] dark:text-blue-400 mb-2">89</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Platser</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-[#0058a3] dark:text-blue-400 mb-2">63</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Yrken</div>
+              <div className="text-4xl font-bold text-[#0058a3] dark:text-blue-400 mb-2">
+                {stats ? yearsCovered : '...'}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">År täckt ({stats ? `${stats.dateRange.earliest}-${stats.dateRange.latest}` : '...'})</div>
             </div>
           </div>
         </div>

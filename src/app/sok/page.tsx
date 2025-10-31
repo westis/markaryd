@@ -84,7 +84,7 @@ function SearchContent() {
             Sök
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Sök efter personer i Markaryd församlings register
+            Sök efter personer i Markaryds församlings register
           </p>
         </div>
 

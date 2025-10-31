@@ -57,7 +57,7 @@ export default function PlatserPage() {
             Platser
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Utforska historiska platser, byar och boendeadresser i Markaryd församling
+            Utforska historiska platser, byar och boendeadresser i Markaryds församling
           </p>
         </div>
 
