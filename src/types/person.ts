@@ -305,7 +305,7 @@ export function getEventTypeName(eventType: GedcomEventType): string {
 // Helper to build hierarchical location path following GEDCOM PLAC structure
 // GEDCOM format: Address, City, County, State, Country
 // Swedish format: Address/Gård, By/Samhälle, Socken/Parish, Län, Country
-export function getLocationPath(location: Location | null, hideCountryIfSweden: boolean = true): string {
+export function getLocationPath(location: Location | null, _hideCountryIfSweden: boolean = true): string {
   if (!location) return '';
 
   const parts: string[] = [];
@@ -314,7 +314,7 @@ export function getLocationPath(location: Location | null, hideCountryIfSweden: 
   // TODO: Fetch parent locations from database
   // For now, return just the location name
   // Future: Build full path like "Traryd, Markaryd, Kronobergs län"
-  // and hide "Sverige" if hideCountryIfSweden is true
+  // and hide "Sverige" if _hideCountryIfSweden is true
 
   return parts.join(', ');
 }

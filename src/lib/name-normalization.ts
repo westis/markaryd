@@ -204,7 +204,7 @@ export function getNameVariations(name: string): string[] {
   }
 
   // If no variations found, check if this is a canonical form
-  for (const [key, variantSet] of nameToVariants.entries()) {
+  for (const [_key, variantSet] of nameToVariants.entries()) {
     if (variantSet.has(lowerName)) {
       return Array.from(variantSet);
     }

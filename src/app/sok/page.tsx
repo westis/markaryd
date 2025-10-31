@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import PersonCard from '@/components/PersonCard';
 import type { PersonDetailed, PaginatedResponse } from '@/types/person';
 
 function SearchContent() {

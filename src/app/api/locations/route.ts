@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase-database';
-import type { Location } from '@/types/person';
 
 export async function GET(request: NextRequest) {
   try {

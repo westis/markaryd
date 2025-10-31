@@ -76,12 +76,14 @@ export async function GET(
 
       residents = filteredPeriods
         .map(period => {
-          const person = period.persons;
-          if (!person) return null;
-          return {
-            ...person,
-            occupation_title: person.occupations?.title || null,
-          } as Person;
+          const personData = period.persons as any;
+          if (!personData || typeof personData !== 'object') return null;
+
+          const person: Person = {
+            ...personData,
+            occupation_title: personData.occupations?.title || null,
+          };
+          return person;
         })
         .filter((person): person is Person => person !== null)
         .filter((person, index, self) =>
@@ -139,12 +141,14 @@ export async function GET(
           return startOk && endOk;
         })
         .map(([_personId, personEvents]) => {
-          const person = personEvents[0].persons;
-          if (!person) return null;
-          return {
-            ...person,
-            occupation_title: person.occupations?.title || null,
-          } as Person;
+          const personData = personEvents[0].persons as any;
+          if (!personData || typeof personData !== 'object') return null;
+
+          const person: Person = {
+            ...personData,
+            occupation_title: personData.occupations?.title || null,
+          };
+          return person;
         })
         .filter((person): person is Person => person !== null);
     }

@@ -92,7 +92,7 @@ export async function GET(
     }
 
     // Get relationships (we need to manually construct this since Supabase doesn't support complex CASE statements easily)
-    const { data: relationships1, error: rel1Error } = await supabase
+    const { data: relationships1, error: _rel1Error } = await supabase
       .from('relationships')
       .select(`
         *,
@@ -100,7 +100,7 @@ export async function GET(
       `)
       .eq('person1_id', personId);
 
-    const { data: relationships2, error: rel2Error } = await supabase
+    const { data: relationships2, error: _rel2Error } = await supabase
       .from('relationships')
       .select(`
         *,
