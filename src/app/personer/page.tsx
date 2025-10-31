@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import PersonCard from '@/components/PersonCard';
 import PersonTable, { type TableFilters, type SortField, type SortDirection } from '@/components/PersonTable';
 import type { PersonDetailed, PaginatedResponse } from '@/types/person';
 
-export default function PersonerPage() {
+function PersonerContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -366,5 +366,17 @@ export default function PersonerPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PersonerPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#0058a3] dark:border-blue-500"></div>
+      </div>
+    }>
+      <PersonerContent />
+    </Suspense>
   );
 }

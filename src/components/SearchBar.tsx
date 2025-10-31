@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Person } from '@/types/person';
+import type { PersonDetailed } from '@/types/person';
 import { getFullName, getLifeSpan } from '@/types/person';
 
 export default function SearchBar() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Person[]>([]);
+  const [results, setResults] = useState<PersonDetailed[]>([]);
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const router = useRouter();
