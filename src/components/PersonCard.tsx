@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import type { Person } from '@/types/person';
+import type { PersonDetailed } from '@/types/person';
 import { getFullName, getLifeSpan, formatDate } from '@/types/person';
 
 interface PersonCardProps {
-  person: Person;
+  person: PersonDetailed;
   showDetails?: boolean;
 }
 

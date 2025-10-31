@@ -3,14 +3,14 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import PersonCard from '@/components/PersonCard';
-import type { Person, PaginatedResponse } from '@/types/person';
+import type { PersonDetailed, PaginatedResponse } from '@/types/person';
 
 function SearchContent() {
   const searchParams = useSearchParams();
   const queryParam = searchParams?.get('q') || '';
 
   const [query, setQuery] = useState(queryParam);
-  const [persons, setPersons] = useState<Person[]>([]);
+  const [persons, setPersons] = useState<PersonDetailed[]>([]);
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState<string>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -42,7 +42,7 @@ function SearchContent() {
       const response = await fetch(
         `/api/search?q=${encodeURIComponent(searchQuery)}&page=${page}&limit=20&sortBy=${sortByParam}&sortOrder=${sortOrderParam}`
       );
-      const data: PaginatedResponse<Person> = await response.json();
+      const data: PaginatedResponse<PersonDetailed> = await response.json();
 
       setPersons(data.data);
       setPagination(data.pagination);

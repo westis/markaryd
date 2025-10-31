@@ -2,6 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase-database';
 import type { PersonDetailed, Source } from '@/types/person';
 
+interface PersonSource {
+  source_order: number;
+  sources: {
+    id: number;
+    source_type: string;
+    source_type_spec: string | null;
+    source_citation: string;
+    source_date: string | null;
+    researcher_id: number | null;
+    created_at: string;
+    researchers?: {
+      name: string;
+    } | null;
+  };
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -62,7 +78,7 @@ export async function GET(
       .order('source_order');
 
     if (!sourcesError && personSources) {
-      formattedPerson.sources = personSources.map((ps): Source => ({
+      formattedPerson.sources = (personSources as unknown as PersonSource[]).map((ps): Source => ({
         id: ps.sources.id,
         source_type: ps.sources.source_type,
         source_type_spec: ps.sources.source_type_spec,

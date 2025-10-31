@@ -15,7 +15,7 @@ export default function LocationDetailPage() {
   const [location, setLocation] = useState<Location | null>(null);
   const [persons, setPersons] = useState<PersonDetailed[]>([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('table');
   const [connectionFilter, setConnectionFilter] = useState<'all' | 'birth' | 'residence' | 'death'>('all');
 
   useEffect(() => {

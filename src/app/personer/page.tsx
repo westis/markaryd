@@ -45,7 +45,7 @@ export default function PersonerPage() {
     maritalStatus: '',
   });
 
-  const debounceTimerRef = useRef<NodeJS.Timeout>();
+  const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Cleanup debounce timer on unmount
   useEffect(() => {
@@ -56,16 +56,25 @@ export default function PersonerPage() {
     };
   }, []);
 
+  // Update URL when state changes
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set('page', currentPage.toString());
+    params.set('limit', itemsPerPage.toString());
+    params.set('view', viewMode);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [currentPage, itemsPerPage, viewMode, pathname, router]);
+
   useEffect(() => {
     fetchPersons();
-  }, [currentPage, filters, tableFilters, viewMode]);
+  }, [currentPage, itemsPerPage, filters, tableFilters, viewMode]);
 
   const fetchPersons = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
         page: currentPage.toString(),
-        limit: '20',
+        limit: itemsPerPage.toString(),
         // Global filters (only used in card view)
         ...(viewMode === 'cards' && {
           search: filters.search,
@@ -273,14 +282,35 @@ export default function PersonerPage() {
 
             {/* Pagination */}
             {pagination.totalPages > 1 && (
-              <div className="flex items-center justify-center space-x-2">
-                <button
-                  onClick={() => handlePageChange(pagination.page - 1)}
-                  disabled={pagination.page === 1}
-                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Föregående
-                </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
+                {/* Items per page selector */}
+                <div className="flex items-center gap-2">
+                  <label className="text-sm text-gray-700 dark:text-gray-300">
+                    Visa per sida:
+                  </label>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(parseInt(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                  >
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+
+                {/* Page navigation */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                    disabled={pagination.page === 1}
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Föregående
+                  </button>
 
                 <div className="flex items-center space-x-1">
                   {[...Array(Math.min(5, pagination.totalPages))].map((_, i) => {
@@ -318,6 +348,7 @@ export default function PersonerPage() {
                 >
                   Nästa
                 </button>
+                </div>
               </div>
             )}
 
