@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase-database';
-import type { PaginatedResponse } from '@/types/person';
+import type { PaginatedResponse, PersonDetailed } from '@/types/person';
 import { generateNameSearchConditions } from '@/lib/name-normalization';
 
 export async function GET(request: NextRequest) {
@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
     const total = count || 0;
     const totalPages = Math.ceil(total / limit);
 
-    const response: PaginatedResponse<any> = {
+    const response: PaginatedResponse<PersonDetailed> = {
       data: formattedPersons,
       pagination: {
         page,

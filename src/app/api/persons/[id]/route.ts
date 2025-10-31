@@ -62,7 +62,7 @@ export async function GET(
       .order('source_order');
 
     if (!sourcesError && personSources) {
-      formattedPerson.sources = personSources.map((ps: any) => ({
+      formattedPerson.sources = personSources.map((ps) => ({
         ...ps.sources,
         researcher_name: ps.sources.researchers?.name || null,
         source_order: ps.source_order,
@@ -99,7 +99,7 @@ export async function GET(
       child: 4,
     };
 
-    formattedPerson.relationships = allRelationships.sort((a: any, b: any) => {
+    formattedPerson.relationships = allRelationships.sort((a, b) => {
       const aOrder = typeOrder[a.relationship_type] || 999;
       const bOrder = typeOrder[b.relationship_type] || 999;
       return aOrder - bOrder;

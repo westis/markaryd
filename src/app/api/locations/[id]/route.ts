@@ -58,7 +58,7 @@ export async function GET(
     ]);
 
     // Merge and deduplicate persons by ID
-    const personsMap = new Map<number, any>();
+    const personsMap = new Map<number, Person>();
 
     [residenceResult.data, birthResult.data, deathResult.data].forEach(resultData => {
       (resultData || []).forEach(person => {
