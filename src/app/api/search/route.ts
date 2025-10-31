@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase-database';
 import type { PaginatedResponse } from '@/types/person';
+import { generateNameSearchConditions } from '@/lib/name-normalization';
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,8 +21,9 @@ export async function GET(request: NextRequest) {
 
     const offset = (page - 1) * limit;
 
-    // Search across name fields
-    const searchPattern = `%${q}%`;
+    // Generate name search conditions with normalization
+    const nameFields = ['first_name', 'normalized_first_name', 'patronymic', 'normalized_patronymic', 'surname', 'normalized_surname'];
+    const searchConditions = generateNameSearchConditions(q, nameFields);
 
     // Map sort fields to database columns
     const sortFieldMap: { [key: string]: string } = {
@@ -40,7 +42,7 @@ export async function GET(request: NextRequest) {
     const { count } = await supabase
       .from('persons')
       .select('*', { count: 'exact', head: true })
-      .or(`normalized_first_name.ilike.${searchPattern},normalized_patronymic.ilike.${searchPattern},normalized_surname.ilike.${searchPattern},first_name.ilike.${searchPattern},patronymic.ilike.${searchPattern}`);
+      .or(searchConditions);
 
     // Get persons with related data
     const { data: persons, error } = await supabase
@@ -52,7 +54,7 @@ export async function GET(request: NextRequest) {
         birth_location:locations!persons_birth_location_id_fkey(name),
         death_location:locations!persons_death_location_id_fkey(name)
       `)
-      .or(`normalized_first_name.ilike.${searchPattern},normalized_patronymic.ilike.${searchPattern},normalized_surname.ilike.${searchPattern},first_name.ilike.${searchPattern},patronymic.ilike.${searchPattern}`)
+      .or(searchConditions)
       .order(sortField, { ascending })
       .range(offset, offset + limit - 1);
 
