@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase-database';
-import type { PersonDetailed } from '@/types/person';
+import type { PersonDetailed, Source } from '@/types/person';
 
 export async function GET(
   request: NextRequest,
@@ -62,9 +62,15 @@ export async function GET(
       .order('source_order');
 
     if (!sourcesError && personSources) {
-      formattedPerson.sources = personSources.map((ps) => ({
-        ...ps.sources,
-        researcher_name: ps.sources.researchers?.name || null,
+      formattedPerson.sources = personSources.map((ps): Source => ({
+        id: ps.sources.id,
+        source_type: ps.sources.source_type,
+        source_type_spec: ps.sources.source_type_spec,
+        source_citation: ps.sources.source_citation,
+        source_date: ps.sources.source_date,
+        researcher_id: ps.sources.researcher_id,
+        researcher_name: ps.sources.researchers?.name || undefined,
+        created_at: ps.sources.created_at,
         source_order: ps.source_order,
       }));
     }

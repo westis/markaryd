@@ -1,15 +1,21 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import PersonCard from '@/components/PersonCard';
 import PersonTable, { type TableFilters, type SortField, type SortDirection } from '@/components/PersonTable';
 import type { PersonDetailed, PaginatedResponse } from '@/types/person';
 
 export default function PersonerPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [persons, setPersons] = useState<PersonDetailed[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1'));
+  const [itemsPerPage, setItemsPerPage] = useState(parseInt(searchParams.get('limit') || '20'));
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>((searchParams.get('view') as 'cards' | 'table') || 'table');
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
