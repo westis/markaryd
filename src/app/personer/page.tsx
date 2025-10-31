@@ -29,8 +29,10 @@ export default function PersonerPage() {
   const [tableFilters, setTableFilters] = useState<TableFilters>({
     firstName: '',
     surname: '',
-    birthDate: '',
-    deathDate: '',
+    birthYearFrom: '',
+    birthYearTo: '',
+    deathYearFrom: '',
+    deathYearTo: '',
     occupation: '',
     location: '',
     gender: '',
@@ -69,8 +71,10 @@ export default function PersonerPage() {
         ...(viewMode === 'table' && {
           filterFirstName: tableFilters.firstName,
           filterSurname: tableFilters.surname,
-          filterBirthDate: tableFilters.birthDate,
-          filterDeathDate: tableFilters.deathDate,
+          filterBirthYearFrom: tableFilters.birthYearFrom,
+          filterBirthYearTo: tableFilters.birthYearTo,
+          filterDeathYearFrom: tableFilters.deathYearFrom,
+          filterDeathYearTo: tableFilters.deathYearTo,
           filterOccupation: tableFilters.occupation,
           filterLocation: tableFilters.location,
           filterGender: tableFilters.gender,
@@ -254,6 +258,7 @@ export default function PersonerPage() {
               <div className="mb-8">
                 <PersonTable
                   persons={persons}
+                  filters={tableFilters}
                   onFilterChange={handleTableFilterChange}
                   onSortChange={handleTableSortChange}
                 />

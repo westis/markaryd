@@ -7,6 +7,7 @@ import { getFullName } from '@/types/person';
 
 interface PersonTableProps {
   persons: PersonDetailed[];
+  filters?: TableFilters;
   onFilterChange?: (filters: TableFilters) => void;
   onSortChange?: (sortField: SortField, sortDirection: SortDirection) => void;
 }
@@ -14,8 +15,10 @@ interface PersonTableProps {
 export interface TableFilters {
   firstName: string;
   surname: string;
-  birthDate: string;
-  deathDate: string;
+  birthYearFrom: string;
+  birthYearTo: string;
+  deathYearFrom: string;
+  deathYearTo: string;
   occupation: string;
   location: string;
   gender: string;
@@ -25,21 +28,23 @@ export interface TableFilters {
 export type SortField = 'name' | 'birth_date' | 'death_date' | 'occupation' | 'location' | 'gender' | 'marital_status';
 export type SortDirection = 'asc' | 'desc';
 
-export default function PersonTable({ persons, onFilterChange, onSortChange }: PersonTableProps) {
+export default function PersonTable({ persons, filters: externalFilters, onFilterChange, onSortChange }: PersonTableProps) {
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-  // Column filters
-  const [filters, setFilters] = useState<TableFilters>({
+  // Use external filters if provided, otherwise use local state
+  const filters = externalFilters || {
     firstName: '',
     surname: '',
-    birthDate: '',
-    deathDate: '',
+    birthYearFrom: '',
+    birthYearTo: '',
+    deathYearFrom: '',
+    deathYearTo: '',
     occupation: '',
     location: '',
     gender: '',
     maritalStatus: '',
-  });
+  };
 
   // Handle sort
   const handleSort = (field: SortField) => {
@@ -49,12 +54,10 @@ export default function PersonTable({ persons, onFilterChange, onSortChange }: P
     onSortChange?.(field, newDirection);
   };
 
-  // Handle filter change with debouncing
+  // Handle filter change
   const handleFilterChange = (key: keyof TableFilters, value: string) => {
     const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-
-    // Call parent callback immediately (parent can implement debouncing if needed)
+    // Call parent callback (parent implements debouncing)
     onFilterChange?.(newFilters);
   };
 
@@ -117,13 +120,26 @@ export default function PersonTable({ persons, onFilterChange, onSortChange }: P
                   <span>Född</span>
                   <SortIcon field="birth_date" />
                 </button>
-                <input
-                  type="text"
-                  placeholder="Filtrera..."
-                  value={filters.birthDate}
-                  onChange={(e) => handleFilterChange('birthDate', e.target.value)}
-                  className="mt-2 w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
-                />
+                <div className="mt-2 flex gap-1">
+                  <input
+                    type="number"
+                    placeholder="Från år"
+                    value={filters.birthYearFrom}
+                    onChange={(e) => handleFilterChange('birthYearFrom', e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                    min="1600"
+                    max="2000"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Till år"
+                    value={filters.birthYearTo}
+                    onChange={(e) => handleFilterChange('birthYearTo', e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                    min="1600"
+                    max="2000"
+                  />
+                </div>
               </th>
 
               {/* Death Date Column */}
@@ -135,13 +151,26 @@ export default function PersonTable({ persons, onFilterChange, onSortChange }: P
                   <span>Död</span>
                   <SortIcon field="death_date" />
                 </button>
-                <input
-                  type="text"
-                  placeholder="Filtrera..."
-                  value={filters.deathDate}
-                  onChange={(e) => handleFilterChange('deathDate', e.target.value)}
-                  className="mt-2 w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
-                />
+                <div className="mt-2 flex gap-1">
+                  <input
+                    type="number"
+                    placeholder="Från år"
+                    value={filters.deathYearFrom}
+                    onChange={(e) => handleFilterChange('deathYearFrom', e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                    min="1600"
+                    max="2000"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Till år"
+                    value={filters.deathYearTo}
+                    onChange={(e) => handleFilterChange('deathYearTo', e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#0058a3] dark:focus:ring-blue-500"
+                    min="1600"
+                    max="2000"
+                  />
+                </div>
               </th>
 
               {/* Gender Column */}

@@ -16,8 +16,10 @@ export async function GET(request: NextRequest) {
     // Column-specific filters
     const filterFirstName = searchParams.get('filterFirstName') || '';
     const filterSurname = searchParams.get('filterSurname') || '';
-    const filterBirthDate = searchParams.get('filterBirthDate') || '';
-    const filterDeathDate = searchParams.get('filterDeathDate') || '';
+    const filterBirthYearFrom = searchParams.get('filterBirthYearFrom') || '';
+    const filterBirthYearTo = searchParams.get('filterBirthYearTo') || '';
+    const filterDeathYearFrom = searchParams.get('filterDeathYearFrom') || '';
+    const filterDeathYearTo = searchParams.get('filterDeathYearTo') || '';
     const filterOccupation = searchParams.get('filterOccupation') || '';
     const filterLocation = searchParams.get('filterLocation') || '';
     const filterMaritalStatus = searchParams.get('filterMaritalStatus') || '';
@@ -72,12 +74,20 @@ export async function GET(request: NextRequest) {
       query = query.or(surnameConditions);
     }
 
-    if (filterBirthDate) {
-      query = query.ilike('birth_date_text', `%${filterBirthDate}%`);
+    // Birth year range filtering
+    if (filterBirthYearFrom) {
+      query = query.gte('birth_date', `${filterBirthYearFrom}-01-01`);
+    }
+    if (filterBirthYearTo) {
+      query = query.lte('birth_date', `${filterBirthYearTo}-12-31`);
     }
 
-    if (filterDeathDate) {
-      query = query.ilike('death_date_text', `%${filterDeathDate}%`);
+    // Death year range filtering
+    if (filterDeathYearFrom) {
+      query = query.gte('death_date', `${filterDeathYearFrom}-01-01`);
+    }
+    if (filterDeathYearTo) {
+      query = query.lte('death_date', `${filterDeathYearTo}-12-31`);
     }
 
     if (filterGender && (filterGender === 'M' || filterGender === 'K')) {
