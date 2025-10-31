@@ -30,7 +30,7 @@ export default function Home() {
       <div className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-5xl font-bold mb-4 text-[#0058a3] dark:text-blue-400">
-            Markaryd Församling
+            Markaryds Församling
           </h1>
           <h2 className="text-2xl font-light text-gray-700 dark:text-gray-300 mb-6">
             Personregister {stats ? `${stats.dateRange.earliest}-${stats.dateRange.latest}` : '...'}
